@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تطبيق حفظ القرآن للأطفال</title>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif; /* تم تغيير الخط إلى روبوتو */
+      background-color: #d178f9cd; /* لون خلفية مشرق */
+      text-align: center;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    header {
+      background-color: #5a196b; /* لون مشرق وجذاب */
+      padding: 20px 0;
+      text-align: center;
+      position: relative;
+    }
+     #playAudioButton {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      z-index: 1000;
+      padding: 10px 15px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      display: none; /* يظهر فقط عند الحاجة */
+    }
+    #playAudioButton:hover {
+      background-color: #0056b3;
+    }
+    /* حركة Flip للصورة */
+    @keyframes flip {
+      0% { transform: rotateY(0deg); }
+      50% { transform: rotateY(180deg); }
+      100% { transform: rotateY(360deg); }
+    }
+
+    header img {
+      width: 100%;
+      max-width: 200px;
+      border-radius: 10px;
+      animation: flip 9s linear infinite; /* الحركة تتكرر باستمرار دون توقف */
+    }
+
+    header h1 {
+      font-size: 19px;
+      color: #fff;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+      margin-top: 20px;
+    }
+
+    .sura-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+      padding: 20px;
+      flex-direction: column;
+    }
+
+    .sura-list button {
+      background-color: #32CD32; /* اللون الأخضر الزاهي */
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s; /* إضافة تأثير للصندوق */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      width: 80%; /* لضبط حجم الأزرار على الهواتف */
+      max-width: 300px; /* الحد الأقصى لعرض الأزرار */
+    }
+
+    .sura-list button:hover {
+      background-color: #490d9c; /* تغيير اللون عند المرور بالماوس */
+      transform: translateY(-5px); /* رفع الزر قليلاً عند المرور */
+    }
+
+    .sura-list button:active {
+      transform: translateY(2px); /* عندما يتم الضغط على الزر */
+    }
+
+    .sura-list button:focus {
+      outline: none;
+      box-shadow: 0 0 10px 3px rgba(255, 99, 71, 0.7); /* تأثير عند التركيز */
+    }
+
+    .video-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #d612128a;
+      padding: 0px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.9);
+      border-radius: 20px;
+      z-index: 1000;
+      text-align: center;
+      max-width: 90%; /* لتناسب جميع شاشات الهواتف */
+      width: 600px;
+      animation: fadeIn 0.5s forwards; /* إضافة حركة تلاشي عند ظهور الفيديو */
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .video-popup h2 {
+      color: #ffffff;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .video-popup video {
+      width: 100%;
+      max-width: 100%;
+      border-radius: 10px;
+    }
+
+    .video-popup button {
+      margin-top: 20px;
+      background-color: #9d1e08;
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      cursor: pointer;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+
+    .video-popup button:hover {
+      background-color: #FF4500;
+    }
+
+    /* تحسين التوافق مع الشاشات الصغيرة */
+    @media screen and (max-width: 600px) {
+      .sura-list {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .sura-list button {
+        width: 90%; /* توسيع الأزرار لتناسب الشاشة */
+      }
+    }
+
+    /* دعم الوضع المظلم */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: ##342dd1; /* خلفية داكنة */
+        color: #fff; /* نص أبيض */
+      }
+
+      header {
+        background-color: ##100d53; /* خلفية داكنة للـ header */
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <img src="https://dl.dropboxusercontent.com/scl/fi/6nj7bxwk7x59zaf33k069/.png?rlkey=80jevx7d41uvk2rzfkfruehn1&st=nvpv2ck8&" alt="صورة تطبيق حفظ القرآن">
+      <h1>تطبيق حفظ القرآن لطفلة جنان</h1>
+    </header>
+
+    <main>
+      <div class="sura-list">
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/oq58lt27yks9zk7v3l0sl/.mp4?rlkey=nu3r63wnaiba89sshfs680bl2&st=q4eoa5be&', 'آية الكرسي')">آية الكرسي</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/3bistmkwdqm4fcjthe2o8/.mp4?rlkey=s6kgiqb01e1sqmdxl13cow8z8&st=b53h9iny&', 'سورة الفاتحة')">سورة الفاتحة</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/phry4n5k31drqshnzffn8/.mp4?rlkey=134cl0sdh313xqekapms8vms2&st=dxqpz5ng&', 'سورة الناس')">سورة الناس</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/fjkku633kxskqi86va46b/.mp4?rlkey=scq0o5zd2p2cfeccdlaa8f64i&st=6dtru8rz&', 'سورة الفلق')">سورة الفلق</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/v8g5q4n9dzg1mdh7o3s60/.mp4?rlkey=a8w3l4z3j0szfvey3hub09e7m&st=c4nmyr0o&', 'سورة الإخلاص')">سورة الإخلاص</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/y0nkn30torwvr6jn69k81/.mp4?rlkey=26ktdr0uo8ivaaxrozrvvzwqj&st=j4y5y3uh&', 'سورة المسد')">سورة المسد</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/o1z72p62cabtl437d9flc/.mp4?rlkey=wo62mh5ht14l67ojsb7xzngv3&st=r4vh5s9l&', 'سورة النصر')">سورة النصر</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/s8k5c7wghhh2vy6x1rdwy/.mp4?rlkey=lzloj9veontv873ka0h1wphwm&st=z27o01pq&>', 'سورة الكافرون')">سورة الكافرون</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/yrmd2vrg2dtoobaj1rcdd/.mp4?rlkey=ehti0jhw7rc9zapbd4qko8kgy&st=avn2cyrd&>', 'سورة الكوثر')">سورة الكوثر</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/ejpkwdp9aygkin84hroat/.mp4?rlkey=25dqwdmkcjpx3zgkhn77nnhez&st=b1g9tlhh&>', 'سورة الماعون')">سورة الماعون</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/b5cwv32lgzoz9ufza1qv8/.mp4?rlkey=kwa18132emfqu2axwm34icrkg&st=rosqdj91&>', 'سورة قريش')">سورة قريش</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/lzla6p2jhtljdiwez4pfl/.mp4?rlkey=uakbm2pxw2twbo46whu73jekm&st=3qdp7ysj&>', 'سورة الفيل')">سورة الفيل</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/5rvfpo63g4z56gadx19ed/.mp4?rlkey=6j55iuwbqdqy4eikj3u2omxc9&st=d4f6748r&>', 'سورة الهمزة')">سورة الهمزة</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/7du2lqig7nrazt47h2hc0/.mp4?rlkey=oorrunwtezau1q2aijpu7mofy&st=oywv9o39&>', 'سورة العصر')">سورة العصر</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/pwcox2n7celvc6r3nlz3b/.mp4?rlkey=0kuhvuofkelyr7uqqv34btfjo&st=w731zjge&>', 'سورة التكاثر')">سورة التكاثر</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/3qzu0tpz89ak15yt2czwb/.mp4?rlkey=x8vdrjfl8iwbzi9lhi2zf194l&st=aimd6qhc&', 'سورة القارعة')">سورة القارعة</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/l7cydoidew4bsmo2bunj9/.mp4?rlkey=7f7a62n3ez4f6q6zj8ki0wz04&st=rqhw0q7j&>', 'سورة العاديات')">سورة العاديات</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/gheq50lctk0ofmn1iuw1w/.mp4?rlkey=ateizshoyvi9vr8s3cro2320a&st=dnykmu87&', 'سورة الزلزلة')">سورة الزلزلة</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/fvdahdch42sw79hebpix2/.mp4?rlkey=b99c4twvg5rd3z4hf4e1y9z9i&st=8t84apqe&', 'سورة البينة')">سورة البينة</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/eoh4fiebkjq9vs0ab6yas/.mp4?rlkey=n5m6nm2sv3rmm2nb8dwz41ecv&st=cj5nb8ld&', 'سورة القدر')">سورة القدر</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/9x84sh6zy57axeb8zxyfx/.mp4?rlkey=d382syrkhs07cjj7hsouu8pdp&st=vhe6j276&', 'سورة العلق')">سورة العلق</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/wz1oc14ktpdmuugiqiz15/.mp4?rlkey=gklzmd0nlspi7uwl8008yqz0r&st=na11dhss&', 'سورة التين')">سورة التين</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/yl9u05twsleen7k12qrqq/.mp4?rlkey=9t4jy39nm8lpbqcsx4qauu5a3&st=aa12pzuw&', 'سورة الشرح')">سورة الشرح</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/gtgt9rytbx8fsmsy9ts7k/.mp4?rlkey=wsy94i4i7ec5v7pp5myijfdzf&st=n7drnbh9&', 'سورة الضحى')">سورة الضحى</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/s9ukeclmqwt8s9pa6bspb/.mp4?rlkey=dr23nbo795v7c7viqhjz422cp&st=xxcjejvq&', 'سورة الليل')">سورة الليل</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/cb0cndod47gjljiemllom/.mp4?rlkey=ejlxjuiqrtxy6w7eq9tqfv25j&st=zm0c1q55&', 'سورة الشمس')">سورة الشمس</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/1sgrbg8z8inr4f6ndezet/.mp4?rlkey=wtwpfxyju0sxnnxf5nzjtzqai&st=r6ud70z1&', 'سورة البلد')">سورة البلد</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/ojiftih4odii2222vug9e/.mp4?rlkey=nlvdv53xwozm6irybvosmzk6r&st=u7rlv3g9&', 'سورة الفجر')">سورة الفجر</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/q8r2w9ghhfvasa5iqbtt9/.mp4?rlkey=vt5kn7ptix6ajcadznd2xqohk&st=c2cz6jyq&', 'سورة الغاشية')">سورة الغاشية</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/9iaixk88vv43ya6ycplzx/.mp4?rlkey=frr4s6cpzmr4jt4vtlgpqdarh&st=rg2u9ndo&', 'سورة الأعلى')">سورة الأعلى</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/y539t0ergapzrl7jmxo2r/.mp4?rlkey=faobqkfqyz5jlt3smagh2dfi8&st=ubzcl1bp&', 'سورة الملك')">سورة الملك</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/y539t0ergapzrl7jmxo2r/.mp4?rlkey=faobqkfqyz5jlt3smagh2dfi8&st=ubzcl1bp&', 'سورة القلم')">سورة القلم</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/y539t0ergapzrl7jmxo2r/.mp4?rlkey=faobqkfqyz5jlt3smagh2dfi8&st=ubzcl1bp&', 'سورة الحاقة')">سورة الحاقة</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/y539t0ergapzrl7jmxo2r/.mp4?rlkey=faobqkfqyz5jlt3smagh2dfi8&st=ubzcl1bp&', 'سورة المعارج')">سورة المعارج</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/y539t0ergapzrl7jmxo2r/.mp4?rlkey=faobqkfqyz5jlt3smagh2dfi8&st=ubzcl1bp&', 'سورة نوح')">سورة نوح</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/y539t0ergapzrl7jmxo2r/.mp4?rlkey=faobqkfqyz5jlt3smagh2dfi8&st=ubzcl1bp&', 'سورة الجن')">سورة الجن</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/y539t0ergapzrl7jmxo2r/.mp4?rlkey=faobqkfqyz5jlt3smagh2dfi8&st=ubzcl1bp&', 'سورة المزمل')">سورة المزمل</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/y539t0ergapzrl7jmxo2r/.mp4?rlkey=faobqkfqyz5jlt3smagh2dfi8&st=ubzcl1bp&', 'سورة المدثر')">سورة المدثر</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/y539t0ergapzrl7jmxo2r/.mp4?rlkey=faobqkfqyz5jlt3smagh2dfi8&st=ubzcl1bp&', 'سورة القيامة')">سورة القيامة</button>
+        <button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/y539t0ergapzrl7jmxo2r/.mp4?rlkey=faobqkfqyz5jlt3smagh2dfi8&st=ubzcl1bp&', 'سورة الإنسان')">سورة الإنسان</button>
+      </div>
+    </main>
+  </div>
+  <!-- زر تشغيل الصوت -->
+  <button id="playAudioButton">تشغيل الصوت</button>
+
+  <!-- نافذة الفيديو المنبثقة -->
+  <div class="video-popup" id="videoPopup" style="display: none;">
+    <h2 id="videoTitle"></h2>
+    <video id="videoPlayer" controls></video>
+    <button onclick="closeVideo()">إغلاق</button>
+  </div>
+
+  <!-- صوت mp3 -->
+  <audio id="backgroundAudio" loop>
+    <source src="https://dl.dropboxusercontent.com/scl/fi/1sbe1vpq9bdulmuzbpn86/ok.mp3?rlkey=17ymo74tksud7bfl1mtmfq9z9&st=jjgu3dwm&" type="audio/mp3">
+    متصفحك لا يدعم تشغيل الصوت.
+  </audio>
+
+  <script>
+    // تشغيل الصوت عند تفاعل المستخدم
+    document.addEventListener('DOMContentLoaded', function () {
+      var backgroundAudio = document.getElementById('backgroundAudio');
+      var playAudioButton = document.getElementById('playAudioButton');
+
+      // محاولة تشغيل الصوت تلقائيًا
+      backgroundAudio.play().catch(function () {
+        console.log('الصوت لم يتم تشغيله تلقائيًا بسبب قيود المتصفح.');
+
+        // عرض زر لتشغيل الصوت يدويًا
+        playAudioButton.style.display = 'block';
+        playAudioButton.addEventListener('click', function () {
+          backgroundAudio.play();
+          playAudioButton.style.display = 'none'; // إخفاء الزر بعد التشغيل
+        });
+      });
+    });
+
+    // فتح الفيديو في نافذة منبثقة
+    function openVideo(videoUrl, title) {
+      var videoPlayer = document.getElementById('videoPlayer');
+      var videoPopup = document.getElementById('videoPopup');
+      var videoTitle = document.getElementById('videoTitle');
+      var backgroundAudio = document.getElementById('backgroundAudio');
+
+      // إيقاف الصوت
+      backgroundAudio.pause();
+
+      // تعيين رابط الفيديو واسم الفيديو
+      videoPlayer.src = videoUrl;
+      videoTitle.innerText = title;
+
+      // عرض نافذة الفيديو المنبثقة
+      videoPopup.style.display = 'block';
+    }
+
+    // إغلاق نافذة الفيديو
+    function closeVideo() {
+      var videoPopup = document.getElementById('videoPopup');
+      var videoPlayer = document.getElementById('videoPlayer');
+      var backgroundAudio = document.getElementById('backgroundAudio');
+
+      // إخفاء نافذة الفيديو المنبثقة وإيقاف الفيديو
+      videoPopup.style.display = 'none';
+      videoPlayer.pause();
+      videoPlayer.currentTime = 0;
+
+      // إعادة تشغيل الصوت
+      backgroundAudio.play();
+    }
+  </script>
+</body>
+</html>

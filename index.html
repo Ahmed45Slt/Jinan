@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>تطبيق حفظ القرآن للأطفال</title>
+        
+<!-- تأكد من إضافة مكتبة Font Awesome في صفحة HTML -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     body {
       font-family: 'Roboto', sans-serif; /* تم تغيير الخط إلى روبوتو */
@@ -26,16 +29,22 @@
     }
      #playAudioButton {
       position: fixed;
-      top: 10px;
-      right: 10px;
-      z-index: 1000;
-      padding: 10px 15px;
-      background-color: #007bff;
-      color: #fff;
+      top: 20px;
+      right: 20px;
+      background-color: #ffdc00;
+      color: #14168d;
       border: none;
-      border-radius: 5px;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
-      display: none; /* يظهر فقط عند الحاجة */
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    
+      /* يظهر فقط عند الحاجة */
     }
     #playAudioButton:hover {
       background-color: #0056b3;
@@ -230,8 +239,11 @@
       </div>
     </main>
   </div>
-  <!-- زر تشغيل الصوت -->
-  <button id="playAudioButton">تشغيل الصوت</button>
+      
+ <!-- باستخدام Font Awesome -->
+<button id="playAudioButton">
+  <i class="fas fa-volume-up"></i> 
+</button>
 
   <!-- نافذة الفيديو المنبثقة -->
   <div class="video-popup" id="videoPopup" style="display: none;">
@@ -242,7 +254,7 @@
 
   <!-- صوت mp3 -->
   <audio id="backgroundAudio" loop>
-    <source src="https://dl.dropboxusercontent.com/scl/fi/1sbe1vpq9bdulmuzbpn86/ok.mp3?rlkey=17ymo74tksud7bfl1mtmfq9z9&st=jjgu3dwm&" type="audio/mp3">
+    <source src="https://dl.dropboxusercontent.com/scl/fi/hkq44l98mlkejg41it7nu/.mp3?rlkey=fd85m9whqglpn7gxepkose332&st=zwwawcwn&" type="audio/mp3">
     متصفحك لا يدعم تشغيل الصوت.
   </audio>
 
@@ -299,4 +311,4 @@
     }
   </script>
 </body>
-  </html>
+          </html>

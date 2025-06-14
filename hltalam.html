@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تطبيق هل تعلم للأطفال</title>
+  <!-- تأكد من إضافة مكتبة Font Awesome في صفحة HTML -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif; /* تم تغيير الخط إلى روبوتو */
+      background-color: #d178f9cd; /* لون خلفية مشرق */
+      text-align: center;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    header {
+      background-color: #5a196b; /* لون مشرق وجذاب */
+      padding: 20px 0;
+      text-align: center;
+      position: relative;
+    }
+
+    #playAudioButton {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #ffdc00;
+      color: #14168d;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    
+      /* يظهر فقط عند الحاجة */
+    }
+
+    #playAudioButton:hover {
+      background-color: #0056b3;
+    }
+
+    /* حركة Flip للصورة */
+    @keyframes flip {
+      0% { transform: rotateY(0deg); }
+      50% { transform: rotateY(180deg); }
+      100% { transform: rotateY(360deg); }
+    }
+
+    header img {
+      width: 100%;
+      max-width: 200px;
+      border-radius: 10px;
+      animation: flip 9s linear infinite;
+    }
+
+    header h1 {
+      font-size: 19px;
+      color: #fff;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+      margin-top: 20px;
+    }
+
+    .fact-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+      padding: 20px;
+      flex-direction: column;
+    }
+
+    .fact-list button {
+      background-color: #32CD32;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      width: 80%;
+      max-width: 300px;
+    }
+
+    .fact-list button:hover {
+      background-color: #490d9c;
+      transform: translateY(-5px);
+    }
+
+    .fact-list button:active {
+      transform: translateY(2px);
+    }
+
+    .fact-list button:focus {
+      outline: none;
+      box-shadow: 0 0 10px 3px rgba(255, 99, 71, 0.7);
+    }
+
+    .video-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #d612128a;
+      padding: 0px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.9);
+      border-radius: 20px;
+      z-index: 1000;
+      text-align: center;
+      max-width: 90%;
+      width: 600px;
+      animation: fadeIn 0.5s forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .video-popup h2 {
+      color: #ffffff;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .video-popup video {
+      width: 100%;
+      max-width: 100%;
+      border-radius: 10px;
+    }
+
+    .video-popup button {
+      margin-top: 20px;
+      background-color: #9d1e08;
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      cursor: pointer;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+
+    .video-popup button:hover {
+      background-color: #FF4500;
+    }
+
+    @media screen and (max-width: 600px) {
+      .fact-list {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .fact-list button {
+        width: 90%;
+      }
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: ##342dd1;
+        color: #fff;
+      }
+
+      header {
+        background-color: ##100d53;
+      }
+    }
+
+    .fact-list button:nth-child(odd) {
+      background-color: #32CD32;
+    }
+
+    .fact-list button:nth-child(even) {
+      background-color: #f07014;
+    }
+    .home-button {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background-color: #ffdc00;
+      color: #14168d;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .home-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    main {
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <img src="https://dl.dropboxusercontent.com/scl/fi/jydt8w7blrysk4evcyszb/.png?rlkey=zvyx6ozcxwr2pvq3bgkic30bg&st=nk4bir01&" alt="صورة تطبيق هل تعلم">
+      <h1> هل تعلم ؟ </h1>
+    </header>
+      
+  <!-- زر العودة للصفحة الرئيسية -->
+  <button class="home-button" onclick="goHome()" aria-label="العودة للصفحة الرئيسية">
+    <i class="fas fa-home"></i>
+  </button>
+    <main>
+      <div class="fact-list">
+       
+<button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/2q4v8rs4bagukagrje3la/_.mp4?rlkey=9w188nnuu6zsqa7v7dtdfdvrz&st=bqro9h9u&', 'هل تعلم؟ _ القرآن الكريم')">هل تعلم؟ _ القرآن الكريم</button>
+<button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/1i7ss8sil3gkv5dgfvh1c/_.mp4?rlkey=0i5fwutkluznd3d8oj24p09fe&st=pvgmp544&', 'هل تعلم؟ _ الصلاة')">هل تعلم؟ _ الصلاة</button>
+<button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/ctgon3258ix9u0lr3c3fd/_.mp4?rlkey=wezzn6nn4wj57bijc86w7kcn6&st=4po8ims7&', 'هل تعلم؟ _ السيرة النبوية')">هل تعلم؟ _ السيرة النبوية</button>
+<button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/9aiqqojqa1lxg3gg7wzur/_.mp4?rlkey=1jaz3vv9huf8ndyee6q9y47g1&st=8c9aha64&', 'هل تعلم؟ _ سيدنا نوح عليه السلام')">هل تعلم؟ _ سيدنا نوح عليه السلام</button>
+<button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/miryy6rgiorgf4uzlzy3f/_.mp4?rlkey=84q04c9ixftv52kedxzgsaqh5&st=6doqyga6&', 'هل تعلم؟ _ سيدنا عيسى عليه السلام')">هل تعلم؟ _ سيدنا عيسى عليه السلام</button>
+<button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/bq8okihnr2v5bjl6tzobw/_.mp4?rlkey=aqvjg2vy7nloiv59g910ng3y9&st=weuh4z29&', 'هل تعلم؟ _ الأنبياء و المرسلين')">هل تعلم؟ _ الأنبياء و المرسلين</button>
+<button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/9p3kxprpnkn9ed6s9yvyl/_.mp4?rlkey=p6f80mbz7da7sjx2ke4ubztcc&st=h4i336hp&', 'هل تعلم؟ _ شهر رمضان المبارك')">هل تعلم؟ _ شهر رمضان المبارك</button>
+<button onclick="openVideo('https://dl.dropboxusercontent.com/scl/fi/39155cbpitg3vk4d0epnw/_.mp4?rlkey=fxzr5l9a6yav4k51ouy9o6g33&st=c8vv0om3&', 'هل تعلم؟ _ عيد الأضحى')">هل تعلم؟ _ عيد الأضحى</button>
+      </div>
+    </main>
+  </div>
+
+<!-- باستخدام Font Awesome -->
+<button id="playAudioButton">
+  <i class="fas fa-volume-up"></i> 
+</button>
+
+<!-- نافذة الفيديو المنبثقة -->
+<div class="video-popup" id="videoPopup" style="display: none;">
+  <h2 id="videoTitle"></h2>
+  <video id="videoPlayer" controls></video>
+  <button onclick="closeVideo()">إغلاق</button>
+</div>
+
+<!-- صوت mp3 -->
+<audio id="backgroundAudio" loop>
+  <source src="https://dl.dropboxusercontent.com/scl/fi/6r3swmgkj065xde1pmqqr/.mp3?rlkey=4li45gmvvnaqdc3lwa7v6v5h9&st=9a59ltzu&" type="audio/mp3">
+  متصفحك لا يدعم تشغيل الصوت.
+</audio>
+
+<script>
+  
+    // وظيفة العودة للصفحة الرئيسية
+    function goHome() {
+      window.location.href = 'index.html'; // قم بتغيير 'index.html' إلى اسم الصفحة الرئيسية الخاصة بك
+    }
+  // تشغيل الصوت عند تفاعل المستخدم
+  document.addEventListener('DOMContentLoaded', function () {
+    var backgroundAudio = document.getElementById('backgroundAudio');
+    var playAudioButton = document.getElementById('playAudioButton');
+
+    // محاولة تشغيل الصوت تلقائيًا
+    backgroundAudio.play().catch(function () {
+      console.log('الصوت لم يتم تشغيله تلقائيًا بسبب قيود المتصفح.');
+
+      // عرض زر لتشغيل الصوت يدويًا
+      playAudioButton.style.display = 'block';
+      playAudioButton.addEventListener('click', function () {
+        backgroundAudio.play();
+        playAudioButton.style.display = 'none'; // إخفاء الزر بعد التشغيل
+      });
+    });
+  });
+
+  // فتح الفيديو في نافذة منبثقة
+  function openVideo(videoUrl, title) {
+    var videoPlayer = document.getElementById('videoPlayer');
+    var videoPopup = document.getElementById('videoPopup');
+    var videoTitle = document.getElementById('videoTitle');
+    var backgroundAudio = document.getElementById('backgroundAudio');
+
+    // إيقاف الصوت
+    backgroundAudio.pause();
+
+    // تعيين رابط الفيديو واسم الفيديو
+    videoPlayer.src = videoUrl;
+    videoTitle.innerText = title;
+
+    // عرض نافذة الفيديو المنبثقة
+    videoPopup.style.display = 'block';
+  }
+
+  // إغلاق نافذة الفيديو
+  function closeVideo() {
+    var videoPopup = document.getElementById('videoPopup');
+    var videoPlayer = document.getElementById('videoPlayer');
+    var backgroundAudio = document.getElementById('backgroundAudio');
+
+    // إخفاء نافذة الفيديو المنبثقة وإيقاف الفيديو
+    videoPopup.style.display = 'none';
+    videoPlayer.pause();
+    videoPlayer.currentTime = 0;
+
+    // إعادة تشغيل الصوت
+    backgroundAudio.play();
+  }
+</script>
+</body>
+</html>
